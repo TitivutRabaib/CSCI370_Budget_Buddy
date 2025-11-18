@@ -18,14 +18,3 @@ The system uses work-hour conversion, goal impact visualizations, simple nudges,
 - Allan  
 
 ---
-
-## Features (Planned)
-
-- Convert dollar amounts → required work hours  
-- Show impact on savings goals  
-- Track daily streaks and spending decisions  
-- Dashboard with simple progress insights  
-- Basic user authentication (planned)  
-- Light/Dark mode (optional)
-
----
