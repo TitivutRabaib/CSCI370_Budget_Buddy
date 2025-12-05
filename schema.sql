@@ -1,5 +1,5 @@
 -- Budget Buddy Database Schema - Sprint 1
--- Foundation: User Authentication Only
+-- User Authentication Only
 
 CREATE DATABASE IF NOT EXISTS budget_buddy;
 USE budget_buddy;
