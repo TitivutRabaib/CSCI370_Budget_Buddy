@@ -61,4 +61,5 @@ public class AuthServlet extends HttpServlet {
                 request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
         }
     }
+
 }

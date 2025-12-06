@@ -16,6 +16,22 @@ public class DashboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Check if logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/auth?action=login");
+            return;
+        }
         
+        User user = (User) session.getAttribute("user");
+        
+        // Set placeholder stats
+        request.setAttribute("user", user);
+        request.setAttribute("currentStreak", 0);
+        request.setAttribute("totalSaved", "0.00");
+        request.setAttribute("skipRate", "0.0");
+        request.setAttribute("monthlySpent", "0.00");
+        
+        request.getRequestDispatcher("/jsp/dashboard.jsp").forward(request, response);
     }
 }
