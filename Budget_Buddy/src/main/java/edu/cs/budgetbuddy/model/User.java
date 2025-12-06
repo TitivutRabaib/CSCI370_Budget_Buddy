@@ -1,3 +1,8 @@
+package edu.cs.budgetbuddy.model;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
 public class User {
 
     private int userId;
