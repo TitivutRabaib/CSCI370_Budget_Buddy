@@ -1,6 +1,6 @@
-<!--Adewole-->
+<%--Adewole--%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isErrorPage="true"%>
-<!-- letting JSP know this is the error page so it can catch exceptions -->
+<%-- letting JSP know this is the error page so it can catch exceptions --%>
 
 <!DOCTYPE html>
 <html>
@@ -65,13 +65,13 @@
 </head>
 
 <body>
-    <!-- the actual error card -->
+    <%-- the actual error card --%>
     <div class="container">
-        <div class="emoji">😅</div> <!-- little goofy error emoji -->
+        <div class="emoji">😅</div> <%-- little goofy error emoji --%>
         <h1>Oops! Something went wrong</h1>
         <p>Don't worry, your savings streak is still intact! Let's get you back on track.</p>
 
-        <!-- taking user back to dashboard safely -->
+        <%-- taking user back to dashboard safely --%>
         <a href="${pageContext.request.contextPath}/dashboard">Back to Dashboard</a>
     </div>
 </body>

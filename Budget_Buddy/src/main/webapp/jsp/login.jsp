@@ -1,7 +1,7 @@
-<!--Adewole: Embedded CSS in this login page for simplicity-->
+<%--Adewole: Embedded CSS in this login page for simplicity--%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<!-- basic html setup -->
+<%-- basic html setup --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Buddy - Login</title>
 
-    <!-- all css for this page -->
+    <%-- all css for this page --%>
     <style>
         /* reset defaults */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -121,43 +121,43 @@
 </head>
 
 <body>
-    <!-- white container holding the form -->
+    <%-- white container holding the form --%>
     <div class="container">
         <h1>💰 Budget Buddy</h1>
         <p class="subtitle">Sprint 1 - Login</p>
 
-        <!-- show backend error if exists -->
+        <%-- show backend error if exists --%>
         <% if (request.getAttribute("error") != null) { %>
             <div class="error"><%= request.getAttribute("error") %></div>
         <% } %>
 
-        <!-- login form -->
+        <%-- login form --%>
         <form action="${pageContext.request.contextPath}/auth" method="post">
 
-            <!-- tells servlet this is login -->
+            <%-- tells servlet this is login --%>
             <input type="hidden" name="action" value="login">
 
-            <!-- username input -->
+            <%-- username input --%>
             <div class="form-group">
                 <label for="username">Username</label>
 
-                <!-- refill input if error happened -->
+                <%-- refill input if error happened --%>
                 <input type="text" id="username" name="username"
                     value="<%= request.getAttribute("username") != null ? request.getAttribute("username") : "" %>"
                     required>
             </div>
 
-            <!-- password input -->
+            <%-- password input --%>
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required>
             </div>
 
-            <!-- login button -->
+            <%-- login button --%>
             <button type="submit">Login</button>
         </form>
 
-        <!-- link to signup page -->
+        <%-- link to signup page --%>
         <p class="signup-link">
             Don't have an account?
             <a href="${pageContext.request.contextPath}/auth?action=signup">Sign up</a>
@@ -165,5 +165,3 @@
     </div>
 </body>
 </html>
-
-
