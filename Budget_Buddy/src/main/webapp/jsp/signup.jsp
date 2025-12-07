@@ -1,7 +1,7 @@
-<!--Adewole: Embedded CSS in this signup page for simplicity-->
+<%--Adewole: Embedded CSS in this signup page for simplicity--%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<!-- basic html setup -->
+<%-- basic html setup --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Buddy - Sign Up</title>
 
-    <!-- styles specific to this page -->
+    <%-- styles specific to this page --%>
     <style>
         /* reset default stuff */
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -138,50 +138,50 @@
 </head>
 
 <body>
-    <!-- outer box -->
+    <%-- outer box --%>
     <div class="container">
 
-        <!-- title + subtitle -->
+        <%-- title + subtitle --%>
         <h1>💰 Budget Buddy</h1>
         <p class="subtitle">Create Your Account</p>
 
-        <!-- if backend sends an "error" attribute, show it -->
+        <%-- if backend sends an "error" attribute, show it --%>
         <% if (request.getAttribute("error") != null) { %>
             <div class="error"><%= request.getAttribute("error") %></div>
         <% } %>
 
-        <!-- signup form -->
+        <%-- signup form --%>
         <form action="${pageContext.request.contextPath}/auth" method="post">
 
-            <!-- tells servlet this is SIGNUP -->
+            <%-- tells servlet this is SIGNUP --%>
             <input type="hidden" name="action" value="signup">
 
-            <!-- username -->
+            <%-- username --%>
             <div class="form-group">
                 <label for="username">Username *</label>
                 <input type="text" id="username" name="username" required>
             </div>
 
-            <!-- email -->
+            <%-- email --%>
             <div class="form-group">
                 <label for="email">Email *</label>
                 <input type="email" id="email" name="email" required>
             </div>
 
-            <!-- password -->
+            <%-- password --%>
             <div class="form-group">
                 <label for="password">Password *</label>
                 <input type="password" id="password" name="password" required>
                 <p class="hint">At least 6 characters</p>
             </div>
 
-            <!-- confirm password -->
+            <%-- confirm password --%>
             <div class="form-group">
                 <label for="confirmPassword">Confirm Password *</label>
                 <input type="password" id="confirmPassword" name="confirmPassword" required>
             </div>
 
-            <!-- wage + budget fields (side-by-side) -->
+            <%-- wage + budget fields (side-by-side) --%>
             <div class="form-row">
                 <div class="form-group">
                     <label for="hourlyWage">Hourly Wage ($)</label>
@@ -194,11 +194,11 @@
                 </div>
             </div>
 
-            <!-- submit button -->
+            <%-- submit button --%>
             <button type="submit">Create Account</button>
         </form>
 
-        <!-- link to login page -->
+        <%-- link to login page --%>
         <p class="login-link">
             Already have an account?
             <a href="${pageContext.request.contextPath}/auth?action=login">Login</a>
