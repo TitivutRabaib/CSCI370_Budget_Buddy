@@ -152,6 +152,56 @@ public class UserDAO {
         return false;
     }
 
+    // Records a Skip decision (Calculator)
+    public static boolean recordSkip(int userId, BigDecimal amountSaved) {
+        String sql = "UPDATE users SET " +
+                "current_streak = current_streak + 1, " +
+                "longest_streak = GREATEST(longest_streak, current_streak + 1), " +
+                "skip_count = skip_count + 1, " +
+                "total_saved = total_saved + ? " +
+                "WHERE user_id = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DatabaseUtil.getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setBigDecimal(1, amountSaved);
+            stmt.setInt(2, userId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DatabaseUtil.close(conn, stmt);
+        }
+        return false;
+    }
+
+
+     // Records a Buy decision (Calculator)
+    public static boolean recordBuy(int userId) {
+        String sql = "UPDATE users SET " +
+                "current_streak = 0, " +
+                "buy_count = buy_count + 1 " +
+                "WHERE user_id = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = DatabaseUtil.getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, userId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DatabaseUtil.close(conn, stmt);
+        }
+        return false;
+    }
+
     // Helper method that converts a ResultSet row into a fully populated User object.
     private static User mapResultSetToUser(ResultSet rs) throws SQLException {
         return new User(
