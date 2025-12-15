@@ -1,6 +1,7 @@
 package edu.cs.budgetbuddy.dao;
 
 import edu.cs.budgetbuddy.model.NudgeLog;
+import edu.cs.budgetbuddy.model.NudgeLog.Decision;
 import edu.cs.budgetbuddy.util.DatabaseUtil;
 
 import java.math.BigDecimal;
@@ -13,9 +14,10 @@ public class NudgeLogDAO {
 
     // Creating a log to track decision making
 	
-    public static NudgeLog create(NudgeLog log) {
+    public static NudgeLog create(NudgeLog nudgeLog) {
         String sql = "INSERT INTO nudge_logs (user_id, amount, work_hours, category, decision, " +
-                     "streak_at_decision, nudge_message) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                     "streak_at_decision, goal_progress_at_decision, knowledge_level_at_decision, " +
+                     "nudge_message) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -25,21 +27,25 @@ public class NudgeLogDAO {
             conn = DatabaseUtil.getConnection();
             stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             
-            stmt.setInt(1, log.getUserId());
-            stmt.setBigDecimal(2, log.getAmount());
-            stmt.setBigDecimal(3, log.getWorkHours());
-            stmt.setString(4, log.getCategory());
-            stmt.setString(5, log.getDecision());
-            stmt.setInt(6, log.getStreakAtDecision());
-            stmt.setString(7, log.getNudgeMessage());
+            stmt.setInt(1, nudgeLog.getUserId());
+            stmt.setBigDecimal(2, nudgeLog.getAmount());
+            stmt.setBigDecimal(3, nudgeLog.getWorkHours());
+            stmt.setString(4, nudgeLog.getCategory());
+            stmt.setString(5, nudgeLog.getDecision().getDbValue());
+            stmt.setInt(6, nudgeLog.getStreakAtDecision());
+            stmt.setBigDecimal(7, nudgeLog.getGoalProgressAtDecision());
+            stmt.setString(8, nudgeLog.getKnowledgeLevelAtDecision());
+            stmt.setString(9, nudgeLog.getNudgeMessage());
             
             int rowsAffected = stmt.executeUpdate();
             
             if (rowsAffected > 0) {
                 rs = stmt.getGeneratedKeys();
                 if (rs.next()) {
-                    log.setLogId(rs.getInt(1));
-                    return log;
+                    nudgeLog.setLogId(rs.getInt(1));
+                    System.out.println("NudgeLogDAO: Logged " + nudgeLog.getDecision() +
+                            " decision for user " + nudgeLog.getUserId());
+                    return nudgeLog;
                 }
             }
         } catch (SQLException e) {
@@ -201,8 +207,10 @@ public class NudgeLogDAO {
             rs.getBigDecimal("amount"),
             rs.getBigDecimal("work_hours"),
             rs.getString("category"),
-            rs.getString("decision"),
+            Decision.fromDbValue(rs.getString("decision")),
             rs.getInt("streak_at_decision"),
+            rs.getBigDecimal("goal_progress_at_decision"),
+            rs.getString("knowledge_level_at_decision"),
             rs.getString("nudge_message"),
             rs.getTimestamp("created_at")
         );
