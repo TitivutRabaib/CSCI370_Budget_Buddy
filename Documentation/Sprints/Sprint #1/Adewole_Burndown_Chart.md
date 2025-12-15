@@ -12,9 +12,9 @@
 | Day 5                                           | Mon Dec 8              |                        | 0               |                 |
 |                                                 |                        |                        |                 |                 |
 | **Person C Tasks:**                             | **Task Completion Date:** |                     |                 |                 |
-| T-0.3: Create base CSS stylesheet               |12/6                    |                        |                 |                 |
-| T-0.4: Create error.jsp                         |12/7                       |                        |                 |                 |
-| T-1.6: Create signup.jsp                        |12/6                        |                        |                 |                 |
-| T-2.3: Create login.jsp                         |12/6                       |                        |                 |                 |
-| T-5.2: Create dashboard.jsp (placeholder stats) |12/7                        |                        |                 |                 |
-| T-5.3: Create navigation bar component          |12/6                       |                        |                 |                 |
+| T-0.3: Create base CSS stylesheet               |12/6/2025                    |                        |                 |                 |
+| T-0.4: Create error.jsp                         |12/7/2025                       |                        |                 |                 |
+| T-1.6: Create signup.jsp                        |12/6/2025                        |                        |                 |                 |
+| T-2.3: Create login.jsp                         |12/6/2025                       |                        |                 |                 |
+| T-5.2: Create dashboard.jsp (placeholder stats) |12/7/2025                        |                        |                 |                 |
+| T-5.3: Create navigation bar component          |12/6/2025                       |                        |                 |                 |
