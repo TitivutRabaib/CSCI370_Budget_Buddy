@@ -144,77 +144,101 @@ public class AuthServlet extends HttpServlet {
     }
     private void processSignup(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
         String username = request.getParameter("username");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
-        BigDecimal hourlyWage = new BigDecimal(request.getParameter("hourlyWage"));
-        BigDecimal monthlyBudget = new BigDecimal(request.getParameter("monthlyBudget"));
+        String hourlyWageStr = request.getParameter("hourlyWage");
+        String monthlyBudgetStr = request.getParameter("monthlyBudget");
+        String knowledgeLevelStr = request.getParameter("knowledgeLevel");
         
-        // Form submission validation
+        // Validate required fields
         if (username == null || username.trim().isEmpty() ||
-            email == null    || email.trim().isEmpty()    ||
-            password == null || password.trim().isEmpty() ||
-            confirmPassword == null || confirmPassword.trim().isEmpty()) {
-            request.setAttribute("error", "All fields are required.");
+            email == null || email.trim().isEmpty() ||
+            password == null || password.isEmpty()) {
+            
+            request.setAttribute("error", "Please fill in all required fields.");
+            preserveSignupFormData(request, username, email, hourlyWageStr, monthlyBudgetStr);
             request.getRequestDispatcher("/jsp/signup.jsp").forward(request, response);
             return;
         }
-
-        // Checks for password match
-        if(!password.equals(confirmPassword)) {
+        
+        // Validate password match
+        if (!password.equals(confirmPassword)) {
             request.setAttribute("error", "Passwords do not match.");
+            preserveSignupFormData(request, username, email, hourlyWageStr, monthlyBudgetStr);
             request.getRequestDispatcher("/jsp/signup.jsp").forward(request, response);
             return;
         }
-
-        //Check for password length
-        if(password.length() < 6) {
-            request.setAttribute("error", "Password must be at least 6 characters long.");
+        
+        // Validate password length
+        if (password.length() < 6) {
+            request.setAttribute("error", "Password must be at least 6 characters.");
+            preserveSignupFormData(request, username, email, hourlyWageStr, monthlyBudgetStr);
             request.getRequestDispatcher("/jsp/signup.jsp").forward(request, response);
             return;
         }
-
-        // Check if username already exists in system
+        
+        // Check if username already exists
         if (UserDAO.usernameExists(username.trim())) {
-            request.setAttribute("error", "Username already taken.");
+            request.setAttribute("error", "Username already taken. Please choose another.");
+            preserveSignupFormData(request, null, email, hourlyWageStr, monthlyBudgetStr);
             request.getRequestDispatcher("/jsp/signup.jsp").forward(request, response);
             return;
         }
-
-        //Check if email already exists in system
+        
+        // Check if email already exists
         if (UserDAO.emailExists(email.trim())) {
-            request.setAttribute("error", "Email already registered.");
+            request.setAttribute("error", "Email already registered. Please login or use another email.");
+            preserveSignupFormData(request, username, null, hourlyWageStr, monthlyBudgetStr);
             request.getRequestDispatcher("/jsp/signup.jsp").forward(request, response);
             return;
         }
-
-        User newUser = new User(username.trim(), email.trim(),
-                                DatabaseUtil.hashPassword(password));
-
-        //Adds user provided fields to the newUser object
+        
+        // Create new user
+        User newUser = new User(
+            username.trim(),
+            email.trim(),
+            DatabaseUtil.hashPassword(password)
+        );
+        
+        // Set optional fields
         try {
-            newUser.setHourlyWage(hourlyWage);
-            newUser.setMonthlyBudget(monthlyBudget);
+            if (hourlyWageStr != null && !hourlyWageStr.trim().isEmpty()) {
+                newUser.setHourlyWage(new BigDecimal(hourlyWageStr.trim()));
+            }
+            if (monthlyBudgetStr != null && !monthlyBudgetStr.trim().isEmpty()) {
+                newUser.setMonthlyBudget(new BigDecimal(monthlyBudgetStr.trim()));
+            }
         } catch (NumberFormatException e) {
             request.setAttribute("error", "Invalid number format for wage or budget.");
+            preserveSignupFormData(request, username, email, hourlyWageStr, monthlyBudgetStr);
             request.getRequestDispatcher("/jsp/signup.jsp").forward(request, response);
             return;
         }
-
-        //Attempts to create user using info provided during signup
-        //Creates a session if successful or kicks the user back to signup page if not
+        
+        if (knowledgeLevelStr != null && !knowledgeLevelStr.trim().isEmpty()) {
+            newUser.setKnowledgeLevel(KnowledgeLevel.fromDbValue(knowledgeLevelStr));
+        }
+        
+        // Save to database
         User createdUser = UserDAO.create(newUser);
+        
         if (createdUser != null) {
+            // Success - log them in automatically
             HttpSession session = request.getSession(true);
             session.setAttribute("user", createdUser);
             session.setAttribute("userId", createdUser.getUserId());
-            session.setMaxInactiveInterval(30 * 60); // 30 minutes
+            session.setMaxInactiveInterval(30 * 60);
             
-            response.sendRedirect(request.getContextPath() + "/dashboard");
+            System.out.println("AuthServlet: Signup successful for " + username);
+            
+            // Redirect to goal setup (first-time user flow)
+            response.sendRedirect(request.getContextPath() + "/goal?action=setup&welcome=true");
         } else {
-            request.setAttribute("error", "Failed to create account. Please try again.");
+            request.setAttribute("error", "Registration failed. Please try again.");
+            preserveSignupFormData(request, username, email, hourlyWageStr, monthlyBudgetStr);
             request.getRequestDispatcher("/jsp/signup.jsp").forward(request, response);
         }
     }
