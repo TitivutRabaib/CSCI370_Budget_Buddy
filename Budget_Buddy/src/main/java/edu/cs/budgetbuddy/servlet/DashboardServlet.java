@@ -1,7 +1,14 @@
 package edu.cs.budgetbuddy.servlet;
 
-import java.io.IOException;
-import java.util.List;
+import edu.cs.budgetbuddy.dao.GoalDAO;
+import edu.cs.budgetbuddy.dao.NudgeLogDAO;
+import edu.cs.budgetbuddy.dao.TransactionDAO;
+import edu.cs.budgetbuddy.dao.UserDAO;
+import edu.cs.budgetbuddy.model.Goal;
+import edu.cs.budgetbuddy.model.NudgeLog;
+import edu.cs.budgetbuddy.model.Transaction;
+import edu.cs.budgetbuddy.model.Transaction.Category;
+import edu.cs.budgetbuddy.model.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,44 +16,84 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import java.util.Map;
 
-import edu.cs.budgetbuddy.dao.NudgeLogDAO;
-import edu.cs.budgetbuddy.dao.UserDAO;
-import edu.cs.budgetbuddy.model.NudgeLog;
-import edu.cs.budgetbuddy.model.User;
-
+/**
+ * DashboardServlet - The Main Hub of Budget Buddy
+ * 
+ * Displays all key statistics and quick links:
+ * - Current streak and total saved
+ * - Goal progress
+ * - Monthly spending summary
+ * - Skip rate (the key metric!)
+ * - Recent activity
+ * 
+ * Endpoints:
+ *   GET /dashboard -> Show dashboard
+ */
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
 
-     @Override
+    private static final long serialVersionUID = 1L;
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
+
+        User user = getLoggedInUser(request);
+        if (user == null) {
             response.sendRedirect(request.getContextPath() + "/auth?action=login");
             return;
         }
         
-        User user = (User) session.getAttribute("user");
         int userId = user.getUserId();
 
         user = UserDAO.findById(userId);
-        session.setAttribute("user", user);
+        request.getSession().setAttribute("user", user);
+
+        int currentStreak = user.getCurrentStreak();
+        int longestStreak = user.getLongestStreak();
+        BigDecimal totalSaved = user.getTotalSaved();
+        int skipCount = user.getSkipCount();
+        int buyCount = user.getBuyCount();
 
         double skipRate = NudgeLogDAO.getSkipRate(userId);
         int totalNudges = NudgeLogDAO.getNudgeCount(userId);
+        BigDecimal totalWorkHoursSaved = NudgeLogDAO.getTotalWorkHoursSaved(userId);
+
+        Goal goal = GoalDAO.findByUserId(userId);
+        double goalProgressPercent = 0;
+        BigDecimal goalAmountRemaining = BigDecimal.ZERO;
+        long daysUntilDeadline = 0;
+        boolean isOnTrack = true;
+        
+        if (goal != null) {
+            goalProgressPercent = goal.getProgressPercent();
+            goalAmountRemaining = goal.getAmountRemaining();
+            daysUntilDeadline = goal.getDaysUntilDeadline();
+            isOnTrack = goal.isOnTrack();
+        }
+
+        BigDecimal monthlyTotal = TransactionDAO.getMonthlyTotal(userId);
+        BigDecimal monthlyBudget = user.getMonthlyBudget();
+        BigDecimal budgetRemaining = monthlyBudget.subtract(monthlyTotal);
+        double budgetUsedPercent = 0;
+        if (monthlyBudget.compareTo(BigDecimal.ZERO) > 0) {
+            budgetUsedPercent = monthlyTotal.divide(monthlyBudget, 4, RoundingMode.HALF_UP)
+                                           .multiply(new BigDecimal("100")).doubleValue();
+        }
+
+        Map<Category, BigDecimal> spendingByCategory = TransactionDAO.getMonthlySpendingByCategory(userId);
+
+        List<Transaction> recentTransactions = TransactionDAO.findRecent(userId, 5);
+
         List<NudgeLog> recentNudges = NudgeLogDAO.findRecent(userId, 5);
 
-        request.setAttribute("user", user);
-        request.setAttribute("currentStreak", user.getCurrentStreak());
-        request.setAttribute("longestStreak", user.getLongestStreak());
-        request.setAttribute("totalSaved", user.getTotalSaved());
-        request.setAttribute("skipCount", user.getSkipCount());
-        request.setAttribute("buyCount", user.getBuyCount());
-        request.setAttribute("skipRate", String.format("%.1f", skipRate));
-        request.setAttribute("totalNudges", totalNudges);
-        request.setAttribute("recentNudges", recentNudges);
+        int impulseCount = TransactionDAO.getMonthlyImpulseCount(userId);
 
         String skipRateStatus;
         String skipRateClass;
@@ -63,9 +110,72 @@ public class DashboardServlet extends HttpServlet {
             skipRateStatus = "Room for improvement";
             skipRateClass = "danger";
         }
+        
+        String budgetStatus;
+        String budgetClass;
+        if (budgetUsedPercent > 100) {
+            budgetStatus = "Over budget!";
+            budgetClass = "danger";
+        } else if (budgetUsedPercent > 80) {
+            budgetStatus = "Approaching limit";
+            budgetClass = "warning";
+        } else {
+            budgetStatus = "On track";
+            budgetClass = "success";
+        }
+        
+        request.setAttribute("user", user);
+
+        request.setAttribute("currentStreak", currentStreak);
+        request.setAttribute("longestStreak", longestStreak);
+        request.setAttribute("totalSaved", totalSaved);
+        request.setAttribute("skipCount", skipCount);
+        request.setAttribute("buyCount", buyCount);
+
+        request.setAttribute("skipRate", skipRate);
+        request.setAttribute("skipRateFormatted", String.format("%.1f", skipRate));
+        request.setAttribute("totalNudges", totalNudges);
         request.setAttribute("skipRateStatus", skipRateStatus);
         request.setAttribute("skipRateClass", skipRateClass);
+        request.setAttribute("totalWorkHoursSaved", totalWorkHoursSaved);
+
+        request.setAttribute("goal", goal);
+        request.setAttribute("goalProgressPercent", goalProgressPercent);
+        request.setAttribute("goalAmountRemaining", goalAmountRemaining);
+        request.setAttribute("daysUntilDeadline", daysUntilDeadline);
+        request.setAttribute("isOnTrack", isOnTrack);
+
+        request.setAttribute("monthlyTotal", monthlyTotal);
+        request.setAttribute("monthlyBudget", monthlyBudget);
+        request.setAttribute("budgetRemaining", budgetRemaining);
+        request.setAttribute("budgetUsedPercent", budgetUsedPercent);
+        request.setAttribute("budgetStatus", budgetStatus);
+        request.setAttribute("budgetClass", budgetClass);
+
+        request.setAttribute("spendingByCategory", spendingByCategory);
+
+        request.setAttribute("recentTransactions", recentTransactions);
+        request.setAttribute("recentNudges", recentNudges);
+
+        request.setAttribute("impulseCount", impulseCount);
+
+        if ("true".equals(request.getParameter("welcome"))) {
+            request.setAttribute("welcomeMessage", true);
+        }
+
+        String message = request.getParameter("message");
+        if (message != null) {
+            request.setAttribute("message", message);
+        }
         
         request.getRequestDispatcher("/jsp/dashboard.jsp").forward(request, response);
+    }
+
+    private User getLoggedInUser(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            return (User) session.getAttribute("user");
+        }
+        return null;
     }
 }
