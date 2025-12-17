@@ -67,7 +67,7 @@
             text-align: center;
         }
         
-        /* big emoji at the top */
+        /* big target emoji at the top */
         .goal-icon {
             font-size: 4em;
             margin-bottom: 20px;
@@ -79,7 +79,7 @@
             margin-bottom: 10px;
         }
         
-        /* status badges (on track, behind, completed) */
+        /* status badge (on track, behind, completed) */
         .goal-status {
             display: inline-block;
             padding: 8px 20px;
@@ -89,19 +89,19 @@
             margin-bottom: 30px;
         }
         
-        /* green badge for on track */
+        /* green badge when on track */
         .goal-status.on-track {
             background: #d4edda;
             color: #155724;
         }
         
-        /* yellow badge for behind schedule */
+        /* yellow badge when behind */
         .goal-status.behind {
             background: #fff3cd;
             color: #856404;
         }
         
-        /* blue badge for completed */
+        /* blue badge when completed */
         .goal-status.completed {
             background: #cce5ff;
             color: #004085;
@@ -111,7 +111,7 @@
             margin: 30px 0;
         }
         
-        /* circular progress indicator */
+        /* circular progress indicator container */
         .progress-circle {
             position: relative;
             width: 200px;
@@ -119,7 +119,7 @@
             margin: 0 auto 20px;
         }
         
-        /* rotate so it starts at the top */
+        /* rotate the svg to start from top */
         .progress-circle svg {
             transform: rotate(-90deg);
         }
@@ -162,7 +162,7 @@
             font-size: 0.9em;
         }
         
-        /* three amount boxes in a row (saved, target, remaining) */
+        /* three boxes showing saved, target, and remaining amounts */
         .amounts {
             display: flex;
             justify-content: space-around;
@@ -182,9 +182,9 @@
             color: #333;
         }
         
-        /* green for current amount */
+        /* green for current amount saved */
         .amount-item .value.current { color: #00b894; }
-        /* red for remaining amount */
+        /* orange for remaining amount */
         .amount-item .value.remaining { color: #e17055; }
         
         .amount-item .label {
@@ -211,7 +211,7 @@
             opacity: 0.9;
         }
         
-        /* yellow motivation message box */
+        /* yellow box displaying user's motivation message */
         .future-message {
             background: #fff3cd;
             border-radius: 15px;
@@ -266,7 +266,7 @@
             border: 2px solid #e1e1e1;
         }
         
-        /* box to add progress manually */
+        /* white box for manually adding progress */
         .add-progress {
             background: white;
             border-radius: 15px;
@@ -280,7 +280,7 @@
             color: #333;
         }
         
-        /* input and button side by side */
+        /* form with input and button side by side */
         .add-progress-form {
             display: flex;
             gap: 10px;
@@ -294,6 +294,7 @@
             font-size: 1em;
         }
         
+        /* green add button */
         .add-progress-form button {
             padding: 12px 25px;
             background: #00b894;
@@ -304,7 +305,7 @@
             cursor: pointer;
         }
         
-        /* success message banner at the top */
+        /* green success message banner */
         .message-banner {
             padding: 15px;
             border-radius: 10px;
@@ -319,7 +320,7 @@
     </style>
 </head>
 <body>
-    <%-- grab all the goal data from the servlet --%>
+    <%-- grab all the goal data from servlet --%>
     <%
         User user = (User) request.getAttribute("user");
         Goal goal = (Goal) request.getAttribute("goal");
@@ -353,7 +354,7 @@
             </div>
         <% } %>
         
-        <%-- show success message if user just updated goal --%>
+        <%-- show success message if goal was updated --%>
         <% if ("updated".equals(request.getParameter("message"))) { %>
             <div class="message-banner success">
                 ✓ Goal updated successfully!
@@ -365,7 +366,7 @@
             <div class="goal-icon">🎯</div>
             <h1 class="goal-name"><%= goal.getGoalName() %></h1>
             
-            <%-- show different status badges based on goal state --%>
+            <%-- status badge (completed, on track, or behind) --%>
             <% if (goal.isCompleted()) { %>
                 <span class="goal-status completed">🎉 Completed!</span>
             <% } else if (isOnTrack) { %>
@@ -385,9 +386,7 @@
                                 <stop offset="100%" stop-color="#764ba2" />
                             </linearGradient>
                         </defs>
-                        <%-- gray background circle --%>
                         <circle class="bg" cx="100" cy="100" r="90"></circle>
-                        <%-- animated progress circle --%>
                         <circle class="progress" cx="100" cy="100" r="90" 
                                 style="stroke-dashoffset: <%= offset %>"></circle>
                     </svg>
@@ -415,7 +414,7 @@
                 </div>
             </div>
             
-            <%-- countdown box (only show if goal has deadline and isn't complete) --%>
+            <%-- purple box showing countdown to deadline --%>
             <% if (goal.getDeadline() != null && !goal.isCompleted()) { %>
                 <div class="deadline-info">
                     <div class="days"><%= daysRemaining %></div>
@@ -423,7 +422,7 @@
                 </div>
             <% } %>
             
-            <%-- user's motivational message (if they wrote one) --%>
+            <%-- yellow box showing user's motivation message --%>
             <% if (goal.getFutureSelfMessage() != null && !goal.getFutureSelfMessage().isEmpty()) { %>
                 <div class="future-message">
                     <h4>💪 Your Motivation</h4>
@@ -431,7 +430,7 @@
                 </div>
             <% } %>
             
-            <%-- action buttons at the bottom --%>
+            <%-- two action buttons --%>
             <div class="action-buttons">
                 <a href="${pageContext.request.contextPath}/calculator" class="action-btn primary">
                     🧮 Use Calculator
@@ -442,7 +441,7 @@
             </div>
         </div>
         
-        <%-- manual progress form (only show if goal isn't complete) --%>
+        <%-- manual progress form (only show if goal not completed) --%>
         <% if (!goal.isCompleted()) { %>
             <div class="add-progress">
                 <h3>➕ Add Progress Manually</h3>

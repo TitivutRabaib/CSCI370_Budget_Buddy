@@ -66,7 +66,7 @@
             padding: 30px;
         }
         
-        /* page title and add button row */
+        /* page title and add button */
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -90,12 +90,11 @@
             transition: transform 0.2s;
         }
         
-        /* little bounce on hover */
         .add-btn:hover {
             transform: translateY(-2px);
         }
         
-        /* grid of summary cards (spent, remaining, budget, impulse) */
+        /* four summary cards at the top */
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -103,7 +102,6 @@
             margin-bottom: 30px;
         }
         
-        /* individual summary card */
         .summary-card {
             background: white;
             border-radius: 15px;
@@ -124,14 +122,14 @@
             color: #333;
         }
         
-        /* red for spent amount */
+        /* red for spent */
         .summary-card.spent .value { color: #d63031; }
-        /* green for remaining amount */
+        /* green for remaining */
         .summary-card.remaining .value { color: #00b894; }
-        /* red when over budget */
+        /* red for over budget */
         .summary-card.over .value { color: #d63031; }
         
-        /* progress bar container (gray background) */
+        /* progress bar showing budget usage */
         .progress-bar {
             background: #e1e1e1;
             border-radius: 10px;
@@ -140,21 +138,20 @@
             overflow: hidden;
         }
         
-        /* colored progress fill */
         .progress-fill {
             height: 100%;
             border-radius: 10px;
             transition: width 0.5s;
         }
         
-        /* green when under 80% budget */
+        /* green when under budget */
         .progress-fill.success { background: #00b894; }
-        /* yellow when 80-100% budget */
+        /* yellow when getting close */
         .progress-fill.warning { background: #fdcb6e; }
         /* red when over budget */
         .progress-fill.danger { background: #d63031; }
         
-        /* filter buttons (this month, all time) */
+        /* filter buttons (this month vs all time) */
         .filter-bar {
             background: white;
             border-radius: 10px;
@@ -175,14 +172,14 @@
             text-decoration: none;
         }
         
-        /* purple border for active filter */
+        /* purple border when active */
         .filter-btn:hover, .filter-btn.active {
             border-color: #667eea;
             color: #667eea;
             background: #f0f3ff;
         }
         
-        /* main white box holding all transactions */
+        /* white box containing all transactions */
         .transactions-list {
             background: white;
             border-radius: 15px;
@@ -190,7 +187,7 @@
             overflow: hidden;
         }
         
-        /* single transaction row */
+        /* individual transaction row */
         .transaction-item {
             display: flex;
             justify-content: space-between;
@@ -209,14 +206,14 @@
             border-bottom: none;
         }
         
-        /* left side (icon + details) */
+        /* left side with icon and details */
         .transaction-info {
             display: flex;
             align-items: center;
             gap: 15px;
         }
         
-        /* colored square with category emoji */
+        /* colored circle with emoji icon */
         .category-icon {
             width: 45px;
             height: 45px;
@@ -227,7 +224,7 @@
             font-size: 1.3em;
         }
         
-        /* different background colors for each category */
+        /* different color for each category */
         .category-icon.food { background: #ffeaa7; }
         .category-icon.entertainment { background: #dfe6e9; }
         .category-icon.shopping { background: #fab1a0; }
@@ -235,7 +232,6 @@
         .category-icon.bills { background: #a29bfe; }
         .category-icon.other { background: #b2bec3; }
         
-        /* transaction description and date */
         .transaction-details h4 {
             color: #333;
             font-size: 1em;
@@ -247,7 +243,7 @@
             font-size: 0.85em;
         }
         
-        /* right side (amount + impulse badge) */
+        /* right side with amount */
         .transaction-amount {
             text-align: right;
         }
@@ -280,7 +276,7 @@
             transition: color 0.3s;
         }
         
-        /* red on hover */
+        /* turns red on hover */
         .delete-btn:hover {
             color: #d63031;
         }
@@ -314,7 +310,7 @@
             color: #155724;
         }
         
-        /* white box showing spending breakdown by category */
+        /* white box showing spending by category */
         .category-breakdown {
             background: white;
             border-radius: 15px;
@@ -328,7 +324,6 @@
             color: #333;
         }
         
-        /* single row in category breakdown */
         .category-row {
             display: flex;
             justify-content: space-between;
@@ -343,7 +338,7 @@
     </style>
 </head>
 <body>
-    <%-- grab all the transaction data from servlet --%>
+    <%-- grab all transaction data from servlet --%>
     <%
         User user = (User) request.getAttribute("user");
         List<Transaction> transactions = (List<Transaction>) request.getAttribute("transactions");
@@ -378,32 +373,30 @@
             <a href="${pageContext.request.contextPath}/transaction?action=add" class="add-btn">+ Add Transaction</a>
         </div>
         
-        <%-- success message when transaction is added --%>
+        <%-- show success message after adding transaction --%>
         <% if ("added".equals(request.getParameter("message"))) { %>
             <div class="message-banner success">
                 ✓ Transaction added successfully!
             </div>
         <% } %>
         
-        <%-- success message when transaction is deleted --%>
+        <%-- show success message after deleting transaction --%>
         <% if ("deleted".equals(request.getParameter("message"))) { %>
             <div class="message-banner success">
                 ✓ Transaction deleted.
             </div>
         <% } %>
         
-        <%-- four summary cards showing key metrics --%>
+        <%-- four summary cards showing key stats --%>
         <div class="summary-cards">
             <div class="summary-card spent">
                 <h3>Spent This Month</h3>
                 <div class="value">$<%= String.format("%.2f", monthlyTotal) %></div>
-                <%-- progress bar showing budget usage --%>
                 <div class="progress-bar">
                     <div class="progress-fill <%= progressClass %>" style="width: <%= Math.min(100, budgetPercent) %>%"></div>
                 </div>
             </div>
             
-            <%-- remaining or over budget card (changes color based on status) --%>
             <div class="summary-card <%= remaining.compareTo(BigDecimal.ZERO) >= 0 ? "remaining" : "over" %>">
                 <h3><%= remaining.compareTo(BigDecimal.ZERO) >= 0 ? "Remaining" : "Over Budget" %></h3>
                 <div class="value">$<%= String.format("%.2f", remaining.abs()) %></div>
@@ -420,7 +413,7 @@
             </div>
         </div>
         
-        <%-- category breakdown box (only show if there's spending data) --%>
+        <%-- category breakdown (only shows if there's data) --%>
         <% if (spendingByCategory != null && !spendingByCategory.isEmpty()) { %>
             <div class="category-breakdown">
                 <h3>Spending by Category</h3>
@@ -444,10 +437,9 @@
         <%-- list of all transactions --%>
         <div class="transactions-list">
             <% if (transactions != null && !transactions.isEmpty()) { %>
-                <%-- loop through each transaction and display it --%>
                 <% for (Transaction tx : transactions) { 
+                    // figure out which emoji to show based on category
                     String iconClass = tx.getCategory().getDbValue();
-                    // pick the right emoji for each category
                     String icon = "food".equals(iconClass) ? "🍔" : 
                                   "entertainment".equals(iconClass) ? "🎬" :
                                   "shopping".equals(iconClass) ? "🛍️" :
@@ -455,7 +447,7 @@
                                   "bills".equals(iconClass) ? "📄" : "📦";
                 %>
                     <div class="transaction-item">
-                        <%-- left side: category icon and details --%>
+                        <%-- left side: icon and details --%>
                         <div class="transaction-info">
                             <div class="category-icon <%= iconClass %>"><%= icon %></div>
                             <div class="transaction-details">
@@ -470,7 +462,7 @@
                                 <div class="impulse-badge">Impulse</div>
                             <% } %>
                         </div>
-                        <%-- delete button (trash can icon) --%>
+                        <%-- trash can delete button with confirmation --%>
                         <form action="${pageContext.request.contextPath}/transaction" method="post" style="display: inline;">
                             <input type="hidden" name="action" value="delete">
                             <input type="hidden" name="transactionId" value="<%= tx.getTransactionId() %>">

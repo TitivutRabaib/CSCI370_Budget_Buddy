@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Set Goal - Budget Buddy</title>
     <style>
-        /* basic resets - no margins/padding to mess things up */
+        /* basic resets */
         * {
             margin: 0;
             padding: 0;
@@ -28,7 +28,7 @@
             padding: 20px;
         }
         
-        /* main white card that holds the goal form */
+        /* main white card in the middle */
         .goal-container {
             background: white;
             border-radius: 25px;
@@ -44,7 +44,6 @@
             margin-bottom: 35px;
         }
         
-        /* big emoji at the top */
         .header .icon {
             font-size: 3.5em;
             margin-bottom: 15px;
@@ -60,7 +59,7 @@
             color: #666;
         }
         
-        /* green welcome banner for new users - makes them feel special */
+        /* green welcome banner for new users */
         .welcome-banner {
             background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
             color: white;
@@ -74,7 +73,7 @@
             margin-bottom: 5px;
         }
         
-        /* wrapper for each input field */
+        /* wrapper for each form input */
         .form-group {
             margin-bottom: 25px;
         }
@@ -86,7 +85,6 @@
             font-weight: 600;
         }
         
-        /* all text inputs and textareas get the same styling */
         .form-group input, .form-group textarea {
             width: 100%;
             padding: 14px 18px;
@@ -96,13 +94,12 @@
             transition: border-color 0.3s;
         }
         
-        /* purple border on focus - matches our theme */
+        /* purple border on focus */
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: #667eea;
         }
         
-        /* textareas can be resized vertically */
         .form-group textarea {
             resize: vertical;
             min-height: 100px;
@@ -116,7 +113,7 @@
             font-size: 0.85em;
         }
         
-        /* two inputs side by side (target amount + current amount) */
+        /* two inputs side by side */
         .form-row {
             display: flex;
             gap: 15px;
@@ -126,21 +123,20 @@
             flex: 1;
         }
         
-        /* bigger, centered text for amount inputs */
+        /* bigger centered text for amount inputs */
         .amount-input {
             font-size: 1.3em !important;
             text-align: center;
             font-weight: 600;
         }
         
-        /* button container - holds multiple buttons in a row */
+        /* button container at the bottom */
         .btn-group {
             display: flex;
             gap: 15px;
             margin-top: 30px;
         }
         
-        /* base button styles */
         .btn {
             flex: 1;
             padding: 16px;
@@ -154,7 +150,7 @@
             border: none;
         }
         
-        /* little bounce effect on hover */
+        /* little bounce on hover */
         .btn:hover {
             transform: translateY(-2px);
         }
@@ -165,14 +161,14 @@
             color: white;
         }
         
-        /* gray button (cancel/back) */
+        /* gray button (cancel) */
         .btn-secondary {
             background: #f8f9fa;
             color: #666;
             border: 2px solid #e1e1e1;
         }
         
-        /* red button (delete) */
+        /* red delete button */
         .btn-danger {
             background: #fff;
             color: #d63031;
@@ -189,7 +185,7 @@
             text-align: center;
         }
         
-        /* gray box with example goals */
+        /* gray box with example goal quick-fills */
         .examples {
             background: #f8f9fa;
             border-radius: 12px;
@@ -203,14 +199,13 @@
             font-size: 0.95em;
         }
         
-        /* example goal chips laid out horizontally */
         .example-goals {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
         
-        /* clickable goal chips - purple outline */
+        /* clickable example goal chips */
         .example-goal {
             background: white;
             padding: 8px 15px;
@@ -222,13 +217,13 @@
             transition: all 0.3s;
         }
         
-        /* fills in purple on hover */
+        /* turns purple on hover */
         .example-goal:hover {
             background: #667eea;
             color: white;
         }
         
-        /* yellow motivation box (future self message) */
+        /* yellow motivation section */
         .motivation-section {
             background: #fff3cd;
             border-radius: 12px;
@@ -247,7 +242,7 @@
             margin-bottom: 15px;
         }
         
-        /* skip link for new users who don't want to set a goal yet */
+        /* skip link for new users */
         .skip-link {
             display: block;
             text-align: center;
@@ -262,7 +257,7 @@
     </style>
 </head>
 <body>
-    <%-- grabbing all the data passed from the servlet --%>
+    <%-- grab goal data from servlet --%>
     <%
         User user = (User) request.getAttribute("user");
         Goal goal = (Goal) request.getAttribute("goal");
@@ -271,16 +266,16 @@
         Date suggestedDeadline = (Date) request.getAttribute("suggestedDeadline");
     %>
 
-    <%-- main goal form card --%>
+    <%-- main goal setup card --%>
     <div class="goal-container">
-        <%-- header with emoji and title --%>
+        <%-- header with target emoji --%>
         <div class="header">
             <div class="icon">🎯</div>
             <h1><%= isEdit ? "Edit Your Goal" : "Set Your Goal" %></h1>
             <p>What are you saving for?</p>
         </div>
         
-        <%-- show welcome banner only for brand new users --%>
+        <%-- green welcome banner (only for new users) --%>
         <% if (isNewUser) { %>
             <div class="welcome-banner">
                 <h3>🎉 Welcome to Budget Buddy!</h3>
@@ -288,19 +283,18 @@
             </div>
         <% } %>
         
-        <%-- if there's an error, show it in red --%>
+        <%-- show error message if something went wrong --%>
         <% if (request.getAttribute("error") != null) { %>
             <div class="error-message">
                 <%= request.getAttribute("error") %>
             </div>
         <% } %>
         
-        <%-- quick-fill examples (only show when creating new goal, not editing) --%>
+        <%-- example goals for quick setup (only show when creating new goal) --%>
         <% if (!isEdit) { %>
             <div class="examples">
                 <h4>💡 Goal Ideas</h4>
                 <div class="example-goals">
-                    <%-- clicking these fills in the form with preset values --%>
                     <span class="example-goal" onclick="setGoal('Spring Break Trip', 500)">🏖️ Spring Break - $500</span>
                     <span class="example-goal" onclick="setGoal('New Phone', 800)">📱 New Phone - $800</span>
                     <span class="example-goal" onclick="setGoal('Emergency Fund', 1000)">🏦 Emergency Fund - $1000</span>
@@ -309,10 +303,9 @@
             </div>
         <% } %>
         
-        <%-- actual goal form --%>
+        <%-- goal form --%>
         <form action="${pageContext.request.contextPath}/goal" method="post">
             <input type="hidden" name="action" value="save">
-            <%-- pass along welcome flag if new user --%>
             <% if (isNewUser) { %>
                 <input type="hidden" name="welcome" value="true">
             <% } %>
@@ -346,7 +339,7 @@
                 </div>
             </div>
             
-            <%-- optional deadline date --%>
+            <%-- optional deadline --%>
             <div class="form-group">
                 <label for="deadline">Target Date (optional)</label>
                 <input type="date" id="deadline" name="deadline" 
@@ -354,7 +347,7 @@
                 <small>When do you want to reach this goal?</small>
             </div>
             
-            <%-- yellow motivation box --%>
+            <%-- yellow box with motivation message --%>
             <div class="motivation-section">
                 <h4>💪 Future Self Message</h4>
                 <p>Write a message to remind yourself why this goal matters. You'll see this when you're tempted to spend!</p>
@@ -364,9 +357,8 @@
                 </div>
             </div>
             
-            <%-- buttons at the bottom --%>
+            <%-- submit buttons --%>
             <div class="btn-group">
-                <%-- show cancel button only when editing --%>
                 <% if (isEdit) { %>
                     <a href="${pageContext.request.contextPath}/goal" class="btn btn-secondary">Cancel</a>
                 <% } %>
@@ -376,7 +368,7 @@
             </div>
         </form>
         
-        <%-- delete button (only shows when editing existing goal) --%>
+        <%-- delete button (only shows when editing) --%>
         <% if (isEdit) { %>
             <form action="${pageContext.request.contextPath}/goal" method="post" style="margin-top: 15px;">
                 <input type="hidden" name="action" value="delete">
@@ -387,15 +379,15 @@
             </form>
         <% } %>
         
-        <%-- let new users skip goal setup if they want --%>
+        <%-- skip link (only for new users) --%>
         <% if (isNewUser) { %>
             <a href="${pageContext.request.contextPath}/dashboard" class="skip-link">Skip for now →</a>
         <% } %>
     </div>
     
-    <%-- JavaScript to fill in form when clicking example goals --%>
+    <%-- javascript to quick-fill example goals --%>
     <script>
-        // fills in goal name and amount when user clicks an example
+        // fills in the form when user clicks an example goal
         function setGoal(name, amount) {
             document.getElementById('goalName').value = name;
             document.getElementById('targetAmount').value = amount;

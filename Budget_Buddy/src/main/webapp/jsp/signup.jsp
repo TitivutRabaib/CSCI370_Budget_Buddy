@@ -1,22 +1,22 @@
-<%--Adewole: Embedded CSS in this signup page for simplicity--%>
+<%--Adewole--%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
-<%-- basic html setup --%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budget Buddy - Sign Up</title>
-
-    <%-- styles specific to this page --%>
+    <title>Sign Up - Budget Buddy</title>
     <style>
-        /* reset default stuff */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        /* purple background + center form */
+        /* basic resets */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* purple gradient background + center everything */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -24,186 +24,235 @@
             justify-content: center;
             padding: 20px;
         }
-
-        /* white box holding the signup form */
-        .container {
+        
+        /* main white signup card in the middle */
+        .signup-container {
             background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             width: 100%;
-            max-width: 450px;
+            max-width: 500px;
         }
-
-        /* page title */
-        h1 {
+        
+        /* logo section at the top */
+        .logo {
             text-align: center;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        /* little description text under title */
-        .subtitle {
-            text-align: center;
-            color: #666;
             margin-bottom: 30px;
         }
-
-        /* space between each form input */
-        .form-group {
-            margin-bottom: 20px;
+        
+        .logo h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 5px;
         }
-
-        /* wrapper for two inputs side by side */
+        
+        .logo p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        /* wrapper for each form input */
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        /* purple border on focus */
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        /* two inputs side by side */
         .form-row {
             display: flex;
             gap: 15px;
         }
+        
         .form-row .form-group {
-            flex: 1;  /* make both even size */
+            flex: 1;
         }
-
-        /* labels above inputs */
-        label {
+        
+        /* small helper text under inputs */
+        .form-group small {
             display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
+            margin-top: 5px;
+            color: #888;
+            font-size: 0.8em;
         }
-
-        /* styling for all input fields */
-        input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e1e1e1;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        /* highlight when clicking input */
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        /* submit button */
-        button {
+        
+        /* purple gradient signup button */
+        .btn {
             width: 100%;
             padding: 14px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
         }
-
-        /* small animation on hover */
-        button:hover {
+        
+        /* lift up and glow on hover */
+        .btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
         }
-
-        /* error message box */
-        .error {
-            background: #fee;
-            color: #c00;
+        
+        /* red error message box */
+        .error-message {
+            background: #ffe6e6;
+            color: #d63031;
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
         }
-
-        /* link under form for login */
+        
+        /* login link at the bottom */
         .login-link {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px;
             color: #666;
         }
+        
         .login-link a {
             color: #667eea;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
         }
-
-        /* small hint text under password */
-        .hint {
-            font-size: 12px;
-            color: #999;
-            margin-top: 4px;
+        
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        
+        /* section dividers with purple text */
+        .section-title {
+            font-size: 1em;
+            color: #667eea;
+            margin: 25px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        /* red asterisk for required fields */
+        .required {
+            color: #d63031;
         }
     </style>
 </head>
-
 <body>
-    <%-- outer box --%>
-    <div class="container">
-
-        <%-- title + subtitle --%>
-        <h1>💰 Budget Buddy</h1>
-        <p class="subtitle">Create Your Account</p>
-
-        <%-- if backend sends an "error" attribute, show it --%>
+    <div class="signup-container">
+        <%-- logo and tagline --%>
+        <div class="logo">
+            <h1>💰 Join Budget Buddy</h1>
+            <p>Start your journey to smarter spending</p>
+        </div>
+        
+        <%-- show error message if signup failed --%>
         <% if (request.getAttribute("error") != null) { %>
-            <div class="error"><%= request.getAttribute("error") %></div>
+            <div class="error-message">
+                <%= request.getAttribute("error") %>
+            </div>
         <% } %>
-
+        
         <%-- signup form --%>
         <form action="${pageContext.request.contextPath}/auth" method="post">
-
-            <%-- tells servlet this is SIGNUP --%>
             <input type="hidden" name="action" value="signup">
-
-            <%-- username --%>
+            
+            <div class="section-title">Account Information</div>
+            
+            <%-- username input --%>
             <div class="form-group">
-                <label for="username">Username *</label>
-                <input type="text" id="username" name="username" required>
+                <label for="username">Username <span class="required">*</span></label>
+                <input type="text" id="username" name="username" 
+                       value="<%= request.getAttribute("username") != null ? request.getAttribute("username") : "" %>"
+                       placeholder="Choose a username" required>
             </div>
-
-            <%-- email --%>
+            
+            <%-- email input --%>
             <div class="form-group">
-                <label for="email">Email *</label>
-                <input type="email" id="email" name="email" required>
+                <label for="email">Email <span class="required">*</span></label>
+                <input type="email" id="email" name="email" 
+                       value="<%= request.getAttribute("email") != null ? request.getAttribute("email") : "" %>"
+                       placeholder="your@email.com" required>
             </div>
-
-            <%-- password --%>
-            <div class="form-group">
-                <label for="password">Password *</label>
-                <input type="password" id="password" name="password" required>
-                <p class="hint">At least 6 characters</p>
+            
+            <%-- password and confirm password side by side --%>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password">Password <span class="required">*</span></label>
+                    <input type="password" id="password" name="password" 
+                           placeholder="Min 6 characters" required minlength="6">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" 
+                           placeholder="Repeat password" required>
+                </div>
             </div>
-
-            <%-- confirm password --%>
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password *</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" required>
-            </div>
-
-            <%-- wage + budget fields (side-by-side) --%>
+            
+            <div class="section-title">Financial Profile</div>
+            
+            <%-- hourly wage and monthly budget side by side --%>
             <div class="form-row">
                 <div class="form-group">
                     <label for="hourlyWage">Hourly Wage ($)</label>
-                    <input type="number" id="hourlyWage" name="hourlyWage" step="0.01" value="15.00">
+                    <input type="number" id="hourlyWage" name="hourlyWage" 
+                           value="<%= request.getAttribute("hourlyWage") != null ? request.getAttribute("hourlyWage") : "15.00" %>"
+                           step="0.01" min="1" placeholder="15.00">
+                    <small>Used to calculate work hours</small>
                 </div>
-
+                
                 <div class="form-group">
                     <label for="monthlyBudget">Monthly Budget ($)</label>
-                    <input type="number" id="monthlyBudget" name="monthlyBudget" step="0.01" value="500.00">
+                    <input type="number" id="monthlyBudget" name="monthlyBudget" 
+                           value="<%= request.getAttribute("monthlyBudget") != null ? request.getAttribute("monthlyBudget") : "500.00" %>"
+                           step="0.01" min="1" placeholder="500.00">
+                    <small>Your spending limit</small>
                 </div>
             </div>
-
+            
+            <%-- knowledge level dropdown --%>
+            <div class="form-group">
+                <label for="knowledgeLevel">Financial Knowledge Level</label>
+                <select id="knowledgeLevel" name="knowledgeLevel">
+                    <option value="beginner">Beginner - I'm just learning</option>
+                    <option value="intermediate" selected>Intermediate - I know the basics</option>
+                    <option value="advanced">Advanced - I'm financially savvy</option>
+                </select>
+                <small>Affects the detail level of nudge messages</small>
+            </div>
+            
             <%-- submit button --%>
-            <button type="submit">Create Account</button>
+            <button type="submit" class="btn">Create Account</button>
         </form>
-
+        
         <%-- link to login page --%>
-        <p class="login-link">
-            Already have an account?
-            <a href="${pageContext.request.contextPath}/auth?action=login">Login</a>
-        </p>
-
+        <div class="login-link">
+            Already have an account? <a href="${pageContext.request.contextPath}/auth?action=login">Login</a>
+        </div>
     </div>
 </body>
 </html>
