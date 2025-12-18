@@ -213,7 +213,7 @@
         <%-- purple encouragement box (only shows when user skips) --%>
         <% if (isSkip) { %>
             <div class="encouragement">
-                🔥 Your streak is now <strong><%= user.getCurrentStreak() %> days</strong>!
+                🔥 Your streak is now <strong><%= user.getCurrentStreak() %> transaction(s)</strong>!
                 Keep up the great work!
             </div>
         <% } else { %>

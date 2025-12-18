@@ -265,7 +265,7 @@
             <div class="stats-row">
                 <div class="stat">
                     <div class="value"><%= user.getCurrentStreak() %></div>
-                    <div class="label">Day Streak</div>
+                    <div class="label">Transaction Streak</div>
                 </div>
                 <div class="stat">
                     <div class="value">$<%= String.format("%.0f", user.getTotalSaved()) %></div>
