@@ -240,7 +240,7 @@
         <% if (currentStreak > 0) { %>
             <div class="streak-warning">
                 <span class="icon">🔥</span>
-                <strong>You have a <%= currentStreak %>-day streak!</strong>
+                <strong>You have a <%= currentStreak %>-transaction streak!</strong>
                 Buying this will reset your progress.
             </div>
         <% } %>

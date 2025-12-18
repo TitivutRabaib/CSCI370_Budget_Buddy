@@ -342,7 +342,7 @@
             <div class="stat-card streak">
                 <h3>🔥 Current Streak</h3>
                 <div class="value"><%= request.getAttribute("currentStreak") %></div>
-                <div class="sub-value">Longest: <%= request.getAttribute("longestStreak") %> days</div>
+                <div class="sub-value">Longest: <%= request.getAttribute("longestStreak") %> transaction(s)</div>
             </div>
             
             <div class="stat-card saved">
