@@ -74,7 +74,7 @@ We, the undersigned members of the Budget Buddy development team, hereby certify
 
 Signature: Person A \- Allan Zhang \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date: \_12/17/2025\_\_\_  
 Signature: Person B \- Titivut (Jeffy) Rabaib \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date: \_12/18/2025\_\_\_  
-Signature: Person C \- Adewole Adeoshun \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date: \_\_\_\_\_\_\_\_\_\_\_
+Signature: Person C \- Adewole Adeoshun \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date: \_12/19/2025_\_\_\_
 
 # 
 
