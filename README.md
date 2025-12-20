@@ -7,7 +7,7 @@ BudgetBuddy is a simple financial awareness tool designed to help users pause an
 ## Project Summary
 
 BudgetBuddy reduces impulse spending by introducing a moment of reflection at the point of purchase.  
-The system uses work-hour conversion, goal impact visualizations, simple nudges, and streak tracking to help users make smarter financial decisions.
+The system uses work-hour conversion, goal impact visualizations, simple nudges, and streak tracking to help users make smarter financial decisions. The link to the website can be found on the GitHub main page but is included here for clarity (bdgtbuddy.org/budget-buddy/)
 
 ---
 
