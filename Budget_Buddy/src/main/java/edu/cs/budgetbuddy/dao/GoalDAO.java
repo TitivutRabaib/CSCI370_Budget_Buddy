@@ -19,7 +19,7 @@ public class GoalDAO {
         
         try {
             conn = DatabaseUtil.getConnection();
-            stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS); 
             
             stmt.setInt(1, goal.getUserId());
             stmt.setString(2, goal.getGoalName());
